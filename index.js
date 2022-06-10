@@ -16,4 +16,5 @@ console.log(`Welcome to the File Manager, ${userName}`);
 
 
 process.chdir(os.homedir());
+console.log(`You are in ${os.homedir()}`);
 parseLine(userName);

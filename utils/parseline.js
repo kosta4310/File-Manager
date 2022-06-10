@@ -22,7 +22,9 @@ async function listDir(pathToDir) {
 
 export const parseLine = (userName) => {
     rl.on('line', (inputUser) => {
-        switch (inputUser) {
+        let commandLineArray = inputUser.split(' ');
+        if (commandLineArray.length === 1) {
+             switch (inputUser) {
             case '.exit':
                 rl.close();
                 break;
@@ -45,8 +47,28 @@ export const parseLine = (userName) => {
                });
                 break;
             default:
-                console.log(`You are in ${cwd()}`);
+                console.log('Invalid input');
         }
+        } else if (commandLineArray.length === 2) {
+            switch (commandLineArray[0]) {
+                case 'cd':
+                    let newPath = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+                   try {
+                     chdir(newPath);
+                     console.log(`You are in ${cwd()}`);
+                   } catch (err) {
+                    console.error('Operation failed');
+                   }
+                    break;
+            
+                default:
+                   console.log('I dont know to write here');
+                    break;
+            }
+        }
+           
+        
+       
         
     
     }).on('close', () => {
