@@ -5,6 +5,8 @@ import fss from 'fs';
 import path, { resolve } from 'path';
 import { chdir, cwd } from 'process';
 import { rejects } from 'assert';
+import { copy } from './copy.js';
+import { move } from './move.js';
 
 
 
@@ -91,25 +93,25 @@ export const parseLine = (userName) => {
             switch (commandLineArray[0]) {
                 case 'rn':
                     const newFileName = commandLineArray[2];
-                    const pathToFileRename = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+                    const pathToFileRename = path.isAbsolute(commandLineArray[1])
+                        ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
                     fs.stat(pathToFileRename).then(value => {
                         if (!value.isDirectory()) {
-                           
                               fss.rename(pathToFileRename, newFileName, (err) => {
                         if (err) {
                              console.error(`Operation failed: ${err.message}`);
                         }
                     })
-                          
                         }else console.error(`Operation failed: ${pathToFileRename} is not file`);
                     }).catch((err)=> console.error(`Operation failed: ${err.message}`));
-                    // fss.rename(pathToFileRename, newFileName, (err) => {
-                    //     if (err) {
-                    //          console.error(`Operation failed: ${err.message}`);
-                    //     }
-                    // })
+                    
                     break;
-            
+                case 'cp':
+                    copy(commandLineArray);
+                    break;
+                case 'mv':
+                    move(commandLineArray);
+                    break;
                 default:
                     console.log('Invalid input');
                     break;
