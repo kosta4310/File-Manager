@@ -9,6 +9,7 @@ import { copy } from './copy.js';
 import { move } from './move.js';
 import { rm } from './delete.js';
 import * as osi from './osi.js';
+import { calcHash } from './hash.js';
 
 
 
@@ -109,6 +110,9 @@ export const parseLine = (userName) => {
                    if (typeof res !== 'undefined') {
                         console.log(res);
                    }
+                    break;
+                case 'hash':
+                    calcHash(commandLineArray);
                     break;
                 // default:
                 //    console.log('Invalid input');
