@@ -8,6 +8,7 @@ import { rejects } from 'assert';
 import { copy } from './copy.js';
 import { move } from './move.js';
 import { rm } from './delete.js';
+import * as osi from './osi.js';
 
 
 
@@ -102,6 +103,12 @@ export const parseLine = (userName) => {
                     rm(commandLineArray)
                         .then(() => console.log('File success delete'))
                         .catch(err => console.error(`Operation failed: ${err.message}`));
+                    break;
+                case 'os':
+                   const res = osi.operationSystemInfo(commandLineArray);
+                   if (typeof res !== 'undefined') {
+                        console.log(res);
+                   }
                     break;
                 // default:
                 //    console.log('Invalid input');
