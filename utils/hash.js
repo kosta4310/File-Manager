@@ -1,11 +1,9 @@
-import * as readline from 'readline';
-// import { getPath } from './utils/getPath.js';
 import fs, { readdir } from 'fs/promises';
 import fss from 'fs';
 import path, { resolve } from 'path';
 import { chdir, cwd } from 'process';
 import { createHash } from 'crypto';
-import { rejects } from 'assert';
+
 
 export function calcHash(commandLineArray) {
      const pathToFile = path.isAbsolute(commandLineArray.slice(1).join(' '))

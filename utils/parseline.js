@@ -1,15 +1,16 @@
 import * as readline from 'readline';
-// import { getPath } from './utils/getPath.js';
+
 import fs, { readdir } from 'fs/promises';
 import fss from 'fs';
 import path, { resolve } from 'path';
 import { chdir, cwd } from 'process';
-import { rejects } from 'assert';
+
 import { copy } from './copy.js';
 import { move } from './move.js';
 import { rm } from './delete.js';
 import * as osi from './osi.js';
 import { calcHash } from './hash.js';
+import { compress, decompress } from './compressAndDecompress.js';
 
 
 
@@ -141,6 +142,16 @@ export const parseLine = (userName) => {
                     break;
                 case 'mv':
                     move(commandLineArray);
+                    break;
+                case 'compress':
+                    compress(commandLineArray)
+                        .then(() => { console.log('success compress') })
+                        .catch(err => console.error(`Operation failed: ${err.message}`));
+                    break;
+                case 'decompress':
+                    decompress(commandLineArray)
+                        .then(() => console.log('success decompress'))
+                        .catch(err => console.error(`Operation failed: ${err.message}`));
                     break;
                 default:
                     console.log('Invalid input');
