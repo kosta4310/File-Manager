@@ -7,6 +7,7 @@ import { chdir, cwd } from 'process';
 import { rejects } from 'assert';
 import { copy } from './copy.js';
 import { move } from './move.js';
+import { rm } from './delete.js';
 
 
 
@@ -45,17 +46,22 @@ export const parseLine = (userName) => {
                 fs.stat(cwd()).then(value => {
                    if (value.isDirectory()) {
                        listDir(cwd())
-                           .then(() => console.log(`You are in ${cwd()}`));
+                           .then(() => console.log(`You are in ${cwd()}`))
+                           .catch(err => console.error(`Operation failed: ${err.message}`));
                    }
                });
                 break;
             default:
                 console.log('Invalid input');
         }
-        } else if (commandLineArray.length === 2) {
+        } else if (commandLineArray.length > 1) {
             switch (commandLineArray[0]) {
                 case 'cd':
-                    const newPath = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+                    
+                    // const newPath = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+                    const newPath = path.isAbsolute(commandLineArray.slice(1).join(' '))
+                        ? commandLineArray.slice(1).join(' ')
+                        : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
                    try {
                      chdir(newPath);
                      console.log(`You are in ${cwd()}`);
@@ -64,7 +70,10 @@ export const parseLine = (userName) => {
                    }
                     break;
                 case 'cat':
-                    const pathToCat = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+                    // const pathToCat = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+                    const pathToCat = path.isAbsolute(commandLineArray.slice(1).join(' '))
+                        ? commandLineArray.slice(1).join(' ')
+                        : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
                     fs.stat(pathToCat).then(value => {
                         if (!value.isDirectory()) {
                            try {
@@ -78,36 +87,46 @@ export const parseLine = (userName) => {
                    
                     break;
                 case 'add':
-                    const pathToNewFile = path.resolve(cwd(), `${commandLineArray[1]}`);
+                    const pathToNewFile = path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
                     fss.writeFile(pathToNewFile, '', {flag: 'wx'}, (err) => {
                         if (err) {
                             console.error(`Operation failed: ${err.message}`);
                         }
                     })
                     break;
-                default:
-                   console.log('Invalid input');
+                case 'rm':
+                    // const pathToDelete = path.isAbsolute(commandLineArray.slice(1).join(' '))
+                    //     ? commandLineArray.slice(1).join(' ')
+                    //     : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
+                    // fs.rm(pathToDelete)
+                    rm(commandLineArray)
+                        .then(() => console.log('File success delete'))
+                        .catch(err => console.error(`Operation failed: ${err.message}`));
                     break;
-            }
-        } else if (commandLineArray.length === 3) {
-            switch (commandLineArray[0]) {
+                // default:
+                //    console.log('Invalid input');
+                //     break;
+            // }
+        // } else if (commandLineArray.length === 3) {
+        //     switch (commandLineArray[0]) {
                 case 'rn':
                     const newFileName = commandLineArray[2];
                     const pathToFileRename = path.isAbsolute(commandLineArray[1])
                         ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
                     fs.stat(pathToFileRename).then(value => {
                         if (!value.isDirectory()) {
-                              fss.rename(pathToFileRename, newFileName, (err) => {
-                        if (err) {
-                             console.error(`Operation failed: ${err.message}`);
-                        }
-                    })
-                        }else console.error(`Operation failed: ${pathToFileRename} is not file`);
-                    }).catch((err)=> console.error(`Operation failed: ${err.message}`));
+                            fss.rename(pathToFileRename, newFileName, (err) => {
+                                if (err) {
+                                    console.error(`Operation failed: ${err.message}`);
+                                }
+                            })
+                        } else console.error(`Operation failed: ${pathToFileRename} is not file`);
+                    }).catch((err) => console.error(`Operation failed: ${err.message}`));
                     
                     break;
                 case 'cp':
-                    copy(commandLineArray);
+                    copy(commandLineArray)
+                        .catch((err) => console.error(`I catch error ${err}`));
                     break;
                 case 'mv':
                     move(commandLineArray);
