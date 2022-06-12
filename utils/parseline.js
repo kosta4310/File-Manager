@@ -11,6 +11,7 @@ import { rm } from './delete.js';
 import * as osi from './osi.js';
 import { calcHash } from './hash.js';
 import { compress, decompress } from './compressAndDecompress.js';
+import { getPathFromArgs } from './pathArgs.js';
 
 
 
@@ -30,7 +31,8 @@ async function listDir(pathToDir) {
 export const parseLine = (userName) => {
     rl.on('line', (inputUser) => {
         let commandLineArray = inputUser.split(' ');
-        if (commandLineArray.length === 1) {
+        const [command, ...args] = inputUser.split(' ');
+        if (args.length === 0) {
              switch (inputUser) {
             case '.exit':
                 rl.close();
@@ -57,14 +59,21 @@ export const parseLine = (userName) => {
             default:
                 console.log('Invalid input');
         }
-        } else if (commandLineArray.length > 1) {
-            switch (commandLineArray[0]) {
+        } else if (args.length > 0) {
+            let arg = getPathFromArgs(args);
+            let arg1, arg2;
+            if (Array.isArray(arg) && arg.length === 1) {
+                arg1 = arg[0];
+            } else if (Array.isArray(arg) && arg.length === 2) {
+                arg1 = arg[0];
+                arg2 = arg[1];
+            }
+           
+            switch (command) {
                 case 'cd':
-                    
-                    // const newPath = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
-                    const newPath = path.isAbsolute(commandLineArray.slice(1).join(' '))
-                        ? commandLineArray.slice(1).join(' ')
-                        : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
+                    const newPath = path.isAbsolute(arg1)
+                        ? arg1
+                        : path.resolve(cwd(),arg1);
                    try {
                      chdir(newPath);
                      console.log(`You are in ${cwd()}`);
@@ -73,10 +82,9 @@ export const parseLine = (userName) => {
                    }
                     break;
                 case 'cat':
-                    // const pathToCat = path.isAbsolute(commandLineArray[1]) ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
-                    const pathToCat = path.isAbsolute(commandLineArray.slice(1).join(' '))
-                        ? commandLineArray.slice(1).join(' ')
-                        : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
+                    const pathToCat = path.isAbsolute(arg1)
+                        ? arg1
+                        : path.resolve(cwd(), arg1);
                     fs.stat(pathToCat).then(value => {
                         if (!value.isDirectory()) {
                            try {
@@ -90,7 +98,7 @@ export const parseLine = (userName) => {
                    
                     break;
                 case 'add':
-                    const pathToNewFile = path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
+                    const pathToNewFile = path.resolve(cwd(), arg1);
                     fss.writeFile(pathToNewFile, '', {flag: 'wx'}, (err) => {
                         if (err) {
                             console.error(`Operation failed: ${err.message}`);
@@ -98,36 +106,32 @@ export const parseLine = (userName) => {
                     })
                     break;
                 case 'rm':
-                    // const pathToDelete = path.isAbsolute(commandLineArray.slice(1).join(' '))
-                    //     ? commandLineArray.slice(1).join(' ')
-                    //     : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
-                    // fs.rm(pathToDelete)
-                    rm(commandLineArray)
+                    
+                    rm(arg1)
                         .then(() => console.log('File success delete'))
                         .catch(err => console.error(`Operation failed: ${err.message}`));
                     break;
                 case 'os':
-                   const res = osi.operationSystemInfo(commandLineArray);
+                   const res = osi.operationSystemInfo(args);
                    if (typeof res !== 'undefined') {
                         console.log(res);
                    }
                     break;
                 case 'hash':
-                    calcHash(commandLineArray);
+                    calcHash(arg1);
                     break;
-                // default:
-                //    console.log('Invalid input');
-                //     break;
-            // }
-        // } else if (commandLineArray.length === 3) {
-        //     switch (commandLineArray[0]) {
+                
                 case 'rn':
-                    const newFileName = commandLineArray[2];
-                    const pathToFileRename = path.isAbsolute(commandLineArray[1])
-                        ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+                    const pathToNewFileName = path.isAbsolute(arg2)
+                        ? arg2
+                        : path.resolve(cwd(), arg2);
+                    const pathToFileRename = path.isAbsolute(arg1)
+                        ? arg1
+                        : path.resolve(cwd(), arg1);
                     fs.stat(pathToFileRename).then(value => {
                         if (!value.isDirectory()) {
-                            fss.rename(pathToFileRename, newFileName, (err) => {
+                            
+                            fss.rename(pathToFileRename, pathToNewFileName, (err) => {
                                 if (err) {
                                     console.error(`Operation failed: ${err.message}`);
                                 }

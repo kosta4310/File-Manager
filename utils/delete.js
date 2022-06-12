@@ -5,9 +5,9 @@ import path, { resolve } from 'path';
 import { chdir, cwd } from 'process';
 
 
-export function rm(commandLineArray) {
-    const pathToDelete = path.isAbsolute(commandLineArray.slice(1).join(' '))
-                        ? commandLineArray.slice(1).join(' ')
-                        : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
+export function rm(arg) {
+    const pathToDelete = path.isAbsolute(arg)
+                        ? arg
+                        : path.resolve(cwd(), arg);
     return fs.rm(pathToDelete);
 }

@@ -1,8 +1,8 @@
 import os from 'os';
 
 
-export function operationSystemInfo(commandLineArray) {
-    switch (commandLineArray[1]) {
+export function operationSystemInfo(args) {
+    switch (args[0]) {
         case '--EOL':
             let arr = {};
             arr.EOL = os.EOL;

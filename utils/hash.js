@@ -5,10 +5,10 @@ import { chdir, cwd } from 'process';
 import { createHash } from 'crypto';
 
 
-export function calcHash(commandLineArray) {
-     const pathToFile = path.isAbsolute(commandLineArray.slice(1).join(' '))
-                        ? commandLineArray.slice(1).join(' ')
-                        : path.resolve(cwd(), `${commandLineArray.slice(1).join(' ')}`);
+export function calcHash(arg) {
+     const pathToFile = path.isAbsolute(arg)
+                        ? arg
+                        : path.resolve(cwd(), arg);
     
     
         const read = fss.createReadStream(pathToFile);
