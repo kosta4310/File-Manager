@@ -9,11 +9,11 @@ import { rejects } from 'assert';
 
 export function move(commandLineArray) {
 
-        // copy(commandLineArray)
-        //     .then(() => {
-    
-        //         fs.rm(pathToFileCopy);
-        //     }).catch((err) => console.error(`Operation failed: ${err.message}`));
+        copy(commandLineArray)
+            .then((msg) => {
+                console.log(msg);
+                fs.rm(pathToFileCopy);
+            }).catch((err) => console.error(`Operation failed: ${err.message}`));
        
 
 
