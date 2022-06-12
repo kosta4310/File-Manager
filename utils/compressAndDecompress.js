@@ -9,10 +9,10 @@ const pipePromisify = promisify(pipeline);
 
 // path_to_destination - путь к папке назначения
 export async function compress(commandLineArray) {
-    const pathToDirectory = path.isAbsolute(commandLineArray[2])
-        ? commandLineArray[2] : path.resolve(cwd(), `${commandLineArray[2]}`);
-    const pathToFile = path.isAbsolute(commandLineArray[1])
+    const pathToDirectory = path.isAbsolute(commandLineArray[1])
         ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+    const pathToFile = path.isAbsolute(commandLineArray[0])
+        ? commandLineArray[0] : path.resolve(cwd(), `${commandLineArray[0]}`);
     
     const baseName = path.basename(pathToFile);
     
@@ -27,10 +27,10 @@ export async function compress(commandLineArray) {
     )
 }
 export async function decompress(commandLineArray) {
-    const pathToDirectory = path.isAbsolute(commandLineArray[2])
-        ? commandLineArray[2] : path.resolve(cwd(), `${commandLineArray[2]}`);
-    const pathToFile = path.isAbsolute(commandLineArray[1])
+    const pathToDirectory = path.isAbsolute(commandLineArray[1])
         ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+    const pathToFile = path.isAbsolute(commandLineArray[0])
+        ? commandLineArray[0] : path.resolve(cwd(), `${commandLineArray[0]}`);
     
     const baseName = path.basename(pathToFile);
     const ext = path.extname(pathToFile);

@@ -142,7 +142,8 @@ export const parseLine = (userName) => {
                     break;
                 case 'cp':
                     copy(arg)
-                        .catch((err) => console.error(`I catch error ${err}`));
+                        .then(msg => console.log(msg))
+                        .catch((err) => console.error(`Operation failed: ${err.message}`));
                     break;
                 case 'mv':
                     move(arg);

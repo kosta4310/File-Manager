@@ -13,7 +13,7 @@ export async function copy(commandLineArray) {
     
         
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
        
          pathToFileCopy = path.isAbsolute(commandLineArray[0])
              ? commandLineArray[0] : path.resolve(cwd(), `${commandLineArray[0]}`);
@@ -23,18 +23,29 @@ export async function copy(commandLineArray) {
              ? path.join(commandLineArray[1], fileName) : path.resolve(cwd(), commandLineArray[1], fileName);
         const read = fss.createReadStream(pathToFileCopy);
         const write = fss.createWriteStream(pathToDirectory, { flags: 'wx', encoding: 'utf-8' });
-        read.on('error', (err) => {
-            console.error(`Operation failed: ${err.message}`);
-             reject();
+        // read.on('error', (err) => {
+        //     // console.error(`Operation failed: ${err.message}`);
+        //      reject(err);
             
-         })
-             .pipe(write).
-            on('error', (err) => {
-              console.error(`Operation failed: ${err.message}`)
-             reject();
-            
-         });
-        resolve('success');
+        // })
+        read
+            // .on("close", () => {
+            // console.log('success copy');
+            // resolve();
+            // })
+            .pipe(write)
+            .on('error', (err) => {
+                reject(err);
+            })
+            .on('finish', () => {
+                // console.log('success copy');
+                resolve('success copy');
+            })
+            // on('error', (err) => {
+            // //   console.error(`Operation failed: ${err.message}`)
+            //  reject(err);
+        //  });
+       
     })
     
         
