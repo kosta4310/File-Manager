@@ -15,12 +15,12 @@ export async function copy(commandLineArray) {
 
     return new Promise((resolve, reject) => {
        
-         pathToFileCopy = path.isAbsolute(commandLineArray[1])
-             ? commandLineArray[1] : path.resolve(cwd(), `${commandLineArray[1]}`);
+         pathToFileCopy = path.isAbsolute(commandLineArray[0])
+             ? commandLineArray[0] : path.resolve(cwd(), `${commandLineArray[0]}`);
          const fileName = path.basename(pathToFileCopy);
          
-         const pathToDirectory = path.isAbsolute(commandLineArray[2])
-             ? path.join(commandLineArray[2], fileName) : path.resolve(cwd(), commandLineArray[2], fileName);
+         const pathToDirectory = path.isAbsolute(commandLineArray[1])
+             ? path.join(commandLineArray[1], fileName) : path.resolve(cwd(), commandLineArray[1], fileName);
         const read = fss.createReadStream(pathToFileCopy);
         const write = fss.createWriteStream(pathToDirectory, { flags: 'wx', encoding: 'utf-8' });
         read.on('error', (err) => {

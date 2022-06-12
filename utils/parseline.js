@@ -141,19 +141,19 @@ export const parseLine = (userName) => {
                     
                     break;
                 case 'cp':
-                    copy(commandLineArray)
+                    copy(arg)
                         .catch((err) => console.error(`I catch error ${err}`));
                     break;
                 case 'mv':
-                    move(commandLineArray);
+                    move(arg);
                     break;
                 case 'compress':
-                    compress(commandLineArray)
+                    compress(arg)
                         .then(() => { console.log('success compress') })
                         .catch(err => console.error(`Operation failed: ${err.message}`));
                     break;
                 case 'decompress':
-                    decompress(commandLineArray)
+                    decompress(arg)
                         .then(() => console.log('success decompress'))
                         .catch(err => console.error(`Operation failed: ${err.message}`));
                     break;
